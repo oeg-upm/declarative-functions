@@ -1,0 +1,63 @@
+prefixes:
+  sql: <http://fno.linkeddata.es/function/sql#> . 
+  schema: <http://schema.org/> .
+  
+mappings:
+  persona:
+    source: 
+      - [personas.csv~csv]
+    s: http://ex.org/Person/$(id)
+    po:
+      - [a, schema:Person]
+      - [schema:givenName, $(nombre)]
+      - [schema:familyName, $(apellido)]
+      - [schema:name, "$(nombre) $(apellido)"]
+      - [schema:telephone, $(telephone), xsd:integer]
+      - p: schema:email
+        o:
+         - function: sql:lower
+           parameters:
+             - parameter: sql:valueParam
+               value: 
+                 function: sql:concat
+                 parameters:
+                   - parameter: sql:valueParam
+                     value: 
+                       function: sql:substr
+                       parameters:
+                         - [sql:_valueParam, $(nombre)]
+                         - [sql:_valueParam4, "1"]
+                         - [sql:_valueParam5, "1"]
+                   - parameter: sql:valueParam2
+                     value:
+                       function: sql:concat
+                       parameters:
+                         - [sql:valueParam, $(apellido)]
+                         - [sql:valueParam2, "@fi.upm.es"]
+  publication:
+    source:
+      - [comentarios.csv~csv]
+    s: http://ex.org/$(id)
+    po: 
+      - [a, schema:SocialMediaPosting]
+      - [schema:comment, $(mensaje)]
+      - p: schema:author
+        o:
+          mapping: persona
+          condition:
+            function: equal
+            parameters:
+              - [str1, $(usuario)]
+              - parameter: str2
+                value:
+                  function: sql:concat
+                  parameters:
+                    - parameter: sql:valueParam
+                      value:
+                        function: sql:substring
+                        parameters:
+                          - [sql:valueParam, $(nombre), o]
+                          - [sql:valueParam4, "1"]
+                          - [sql:valueParam5, "1"]
+                    - [sql:valueParam2, $(apellido), o]
+      

@@ -1,0 +1,36 @@
+prefixes:
+  sql: <http://fno.linkeddata.es/function/sql#> . 
+  schema: <http://schema.org/> .
+
+mappings:
+  persona:
+    source: 
+      - [personas.csv~csv]
+    s: http://ex.org/Person/$(id)
+    po:
+      - [a, schema:Person]
+      - [schema:givenName, $(name)]
+      - [schema:familyName, $(surname)]
+      - [schema:name, "$(name) $(surname)"]
+      - [schema:telephone, $(telephone), xsd:integer]
+      - [schema:email, "$(email)"]
+  publication:
+    source:
+      - [comentarios.csv~csv]
+    s: http://ex.org/$(id)
+    po: 
+      - [a, schema:SocialMediaPosting]
+      - [schema:comment, $(mensaje)]
+      - p: schema:author
+        o:
+          mapping: persona
+          condition:
+            function: equal
+            parameters:
+              - parameter: str1
+                value:
+                  function: sql:concat
+                  parameters:
+                    - [sql:valueParameter, $(username), o]
+                    - [sql:valueParameter2, "@fi.upm.es"]
+              - [str2, $(email)]      
