@@ -4,8 +4,8 @@ We follow the Function Ontology to define transformation functions that are usin
 
 The repository is opened for contributions.
 
-- SQL functions defined by Ontology Engineering Group (OEG)
-- GREL functions defined by IDLabe (UGhent)
+- SQL functions defined by OEG (UPM)
+- GREL functions defined by IDLab (UGhent)
 
 
 ## Contact
